@@ -78,7 +78,7 @@ def login_user():
 
     if stored_password is None:
         print("Invalid username.")
-        return
+        return False
 
     # Hash the entered password
     hashed_password = hash_password(password)
@@ -90,6 +90,7 @@ def login_user():
     else:
         print("Invalid password.")
         return False
+
 
 def get_hashed_password(username):
     """
@@ -210,66 +211,70 @@ def check_password_strength(password):
 def main():
     """
     Main program loop.
-    Displays a menu with options for registration, login, password generation, viewing saved passwords, and deleting passwords.
+    Displays a menu with options for registration, login, password generation, viewing saved passwords,
+    deleting passwords, changing password, resetting password, and exiting.
     Based on the user's choice, calls the corresponding functions.
     """
+    logged_in = False  # Track if the user is logged in or not
+
     while True:
         print("\nPassword Generator Menu:")
         print("1. Register")
         print("2. Login")
-        print("3. Generate Password")
-        print("4. View Saved Passwords")
-        print("5. Delete Password")
-        print("6. Exit")
+        if logged_in:
+            print("3. Generate Password")
+            print("4. View Saved Passwords")
+            print("5. Delete Password")
+            print("6. Change Password")
+            print("7. Reset Password")
+            print("8. Logout")
+            print("9. Exit")
+        else:
+            print("3. Exit")
 
-        choice = input("Enter your choice (1-6): ")
+        choice = input("Enter your choice (1-9): ")
 
         if choice == "1":
             register_user()
         elif choice == "2":
-            if login_user():
-                while True:
-                    print("\nLogged in Menu:")
-                    print("1. Change Password")
-                    print("2. Generate Password")
-                    print("3. View Saved Passwords")
-                    print("4. Delete Password")
-                    print("5. Logout")
-
-                    logged_in_choice = input("Enter your choice (1-5): ")
-
-                    if logged_in_choice == "1":
-                        # Implement change password functionality
-                        pass
-                    elif logged_in_choice == "2":
-                        password = password_generator()
-                        password_strength = check_password_strength(password)
-                        print(password_strength)
-                        if password_strength == "Strong Password":
-                            save_password(password)
-                        else:
-                            print("Password not saved due to weak strength.")
-                    elif logged_in_choice == "3":
-                        view_saved_passwords()
-                    elif logged_in_choice == "4":
-                        delete_password()
-                    elif logged_in_choice == "5":
-                        break
-                    else:
-                        print("Invalid choice. Please try again.")
+            logged_in = login_user()
         elif choice == "3":
-            password = password_generator()
-            password_strength = check_password_strength(password)
-            print(password_strength)
-            if password_strength == "Strong Password":
-                save_password(password)
+            if logged_in:
+                password = password_generator()
+                password_strength = check_password_strength(password)
+                print(password_strength)
+                if password_strength == "Strong Password":
+                    save_password(password)
+                else:
+                    print("Password not saved due to weak strength")
             else:
-                print("Password not saved due to weak strength.")
+                break
         elif choice == "4":
-            view_saved_passwords()
+            if logged_in:
+                view_saved_passwords()
+            else:
+                break
         elif choice == "5":
-            delete_password()
+            if logged_in:
+                delete_password()
+            else:
+                break
         elif choice == "6":
+            if logged_in:
+                change_password()
+            else:
+                break
+        elif choice == "7":
+            if logged_in:
+                reset_password()
+            else:
+                break
+        elif choice == "8":
+            if logged_in:
+                logged_in = False
+            else:
+                break
+        elif choice == "9":
             break
         else:
             print("Invalid choice. Please try again.")
