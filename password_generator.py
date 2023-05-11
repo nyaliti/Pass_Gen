@@ -1,12 +1,40 @@
 import datetime
 import hashlib
 import random
+import string
 
 # User database file path
 USER_DB_FILE = "user_db.txt"
 
 # Password database file path
 PASSWORD_DB_FILE = "password_db.txt"
+
+
+def hash_password(password):
+    # Create a new SHA-256 hash object
+    sha256_hash = hashlib.sha256()
+
+    # Update the hash object with the password
+    sha256_hash.update(password.encode('utf-8'))
+
+    # Get the hashed password
+    hashed_password = sha256_hash.hexdigest()
+
+    return hashed_password
+
+    
+
+
+def check_username_exists(username):
+    """
+    Check if the given username already exists in the user database file.
+    Returns True if the username exists, False otherwise.
+    """
+    with open(USER_DB_FILE, "r") as user_db:
+        for line in user_db:
+            if line.startswith(username + ":"):
+                return True
+    return False
 
 
 def register_user():
@@ -33,6 +61,7 @@ def register_user():
     print("User registered successfully!")
 
 
+
 def login_user():
     """
     Log in an existing user by prompting for the username and password.
@@ -43,22 +72,23 @@ def login_user():
     password = input("Enter your password: ")
 
     # Retrieve the hashed password from the user database file
-    stored_password = get_hashed_password(username)
+    stored_password = hashed_password(username)
 
     if stored_password is None:
         print("Invalid username.")
         return
 
     # Hash the entered password
-    hashed_password = hash_password(password)
+    hashed_user_password = hash_password(password)
 
     # Compare the hashed passwords
-    if hashed_password == stored_password:
+    if hashed_user_password == stored_password:
         print("Login successful!")
         return True
     else:
         print("Invalid password.")
         return False
+
 
 
 def password_generator():
@@ -111,7 +141,7 @@ def delete_password():
     Prompt the user to enter the password they want to delete.
     Remove the specified password from the password file.
     """
-        password_to_delete = input("Enter the password you want to delete: ")
+    password_to_delete = input("Enter the password you want to delete: ")
     hashed_password_to_delete = hash_password(password_to_delete)
 
     with open(PASSWORD_DB_FILE, "r") as password_db:
@@ -335,7 +365,7 @@ def main():
                 save_password(password)
             else:
                 print("Password not saved due to weak strength")
-                        elif choice == "4":
+        elif choice == "4":
             view_saved_passwords()
         elif choice == "5":
             delete_password()
