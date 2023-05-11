@@ -72,22 +72,37 @@ def login_user():
     password = input("Enter your password: ")
 
     # Retrieve the hashed password from the user database file
-    stored_password = hashed_password(username)
+    stored_password = get_hashed_password(username)
 
     if stored_password is None:
         print("Invalid username.")
         return
 
     # Hash the entered password
-    hashed_user_password = hash_password(password)
+    hashed_password = hash_password(password)
 
     # Compare the hashed passwords
-    if hashed_user_password == stored_password:
+    if hashed_password == stored_password:
         print("Login successful!")
         return True
     else:
         print("Invalid password.")
         return False
+
+def get_hashed_password(username):
+    """
+    Retrieve the hashed password from the user database file based on the provided username.
+    """
+    with open("user_db.txt", "r") as file:
+        for line in file:
+            stored_username, stored_password = line.strip().split(":")
+            if stored_username == username:
+                return stored_password
+    return None
+
+# Rest of your code...
+
+
 
 
 
