@@ -411,3 +411,43 @@ if __name__ == "__main__":
     main()
 
 
+import sys
+
+
+while True:
+    print("Password Generator Menu:")
+    print("1. Register")
+    print("2. Login")
+    print("3. Generate Password")
+    print("4. View Saved Passwords")
+    print("5. Delete Password")
+    print("6. Change Password")
+    print("7. Reset Password")
+    print("8. Logout")
+    print("9. Exit")
+
+    choice = input("Enter your choice (1-9): ")
+
+    if choice == "1":
+        register()
+    elif choice == "2":
+        login()
+    elif choice == "3":
+        generate_password()
+    elif choice == "4":
+        view_passwords()
+    elif choice == "5":
+        delete_password()
+    elif choice == "6":
+        change_password()
+    elif choice == "7":
+        reset_password()
+    elif choice == "8":
+        logout()
+    elif choice == "9":
+        print("Exiting the Password Generator...")
+        break  # Break out of the loop and exit the program
+    else:
+        print("Invalid choice. Please try again.")
+
+print("Back to the normal terminal state.")
