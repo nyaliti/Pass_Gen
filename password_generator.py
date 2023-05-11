@@ -2,6 +2,8 @@ import datetime
 import hashlib
 import random
 import string
+from cryptography_utils import decrypt_password
+
 
 # User database file path
 USER_DB_FILE = "user_db.txt"
@@ -141,14 +143,20 @@ def save_password(password):
 
 
 def view_saved_passwords():
-    """
-    Read the password file and display the saved passwords along with their creation dates and times.
-    """
+    print("Saved Passwords:")
     with open(PASSWORD_DB_FILE, "r") as password_db:
-        for line in password_db:
-            hashed_password, timestamp = line.strip().split(":")
-            password = decrypt_password(hashed_password)
-            print(f"Password: {password}\nCreated at: {timestamp}\n")
+        lines = password_db.readlines()
+        for line in lines:
+            line = line.strip()
+            if line:
+                try:
+                    hashed_password, timestamp = line.split(":")
+                    decrypted_password = decrypt_password(hashed_password)  # Decrypt the hashed password
+                    print("Decrypted Password:", decrypted_password, "Timestamp:", timestamp)
+                except ValueError:
+                    print("Invalid line format:", line)
+    print("End of saved passwords")
+
 
 
 def delete_password():
